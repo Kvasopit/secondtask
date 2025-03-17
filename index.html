@@ -8,29 +8,21 @@
 </head>
 <body>
 <div id="app">
+    <button @click="addCard">Добавить карточку</button>
     <div class="columns">
         <div class="column" id="column-1">
             <h2>Новые</h2>
             <div v-for="(card, index) in columns[0]" :key="index" class="card">
                 <h3>{{ card.title }}</h3>
+                <button @click="addTask(card)">Добавить пункт</button>
             </div>
         </div>
-        <div class="column" id="column-2">
-            <h2>В процессе</h2>
-            <div v-for="(card, index) in columns[1]" :key="index" class="card">
-                <h3>{{ card.title }}</h3>
-            </div>
-        </div>
-        <div class="column" id="column-3">
-            <h2>Готово</h2>
-            <div v-for="(card, index) in columns[2]" :key="index" class="card">
-                <h3>{{ card.title }}</h3>
-            </div>
-        </div>
-        <button @click="addCard">Добавить карточку</button>
     </div>
 </div>
-<script src="js/vue.min.js" defer></script>
+
+<!-- Подключаем Vue -->
+<script src="js/vue.min.js"></script>
+<!-- Подключаем main.js -->
 <script src="js/main.js"></script>
 </body>
 </html>
