@@ -1,107 +1,16 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Заметки</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
-<div id="app">
+<!-- Минимальная разметка – только контейнер для Vue -->
+<div id="app"></div>
 
-    <!-- Кнопка добавления карточки (блокируется, если isColumn1Blocked === true) -->
-    <button @click="addCard" :disabled="isColumn1Blocked" class="add-card-clear-btn">
-        Добавить карточку
-    </button>
-    <button @click="clearStorage" class="add-card-clear-btn">Очистить Ежедневник</button>
-    <p v-if="isColumn1Blocked" class="warning">
-        Первый столбец заблокирован для редактирования
-    </p>
-
-    <div class="columns">
-        <!-- 1-й столбец -->
-        <div class="column">
-            <h2>Новые</h2>
-            <div v-for="(card, index) in columns[0]" :key="index" class="card">
-                <div class="card-title">
-                    <!-- Заголовок карточки можно редактировать двойным кликом -->
-                    <template v-if="!card.isEditingTitle">
-                        <h3 @dblclick="editCardTitle(card)">{{ card.title }}</h3>
-                    </template>
-                    <template v-else>
-                        <input type="text" v-model="card.title"
-                               @blur="saveCardTitle(card)" @keyup.enter="saveCardTitle(card)" />
-                    </template>
-                </div>
-                <ul class="task-list">
-                    <li v-for="(task, tIndex) in card.tasks" :key="tIndex">
-                        <input type="checkbox" v-model="task.done" @change="updateProgress(card)" />
-                        <!-- Редактируем текст пункта двойным кликом -->
-                        <template v-if="!task.isEditing">
-                            <span @dblclick="editTask(task)">{{ task.text }}</span>
-                        </template>
-                        <template v-else>
-                            <input type="text" v-model="task.text"
-                                   @blur="saveTask(task)" @keyup.enter="saveTask(task)" />
-                        </template>
-                    </li>
-                </ul>
-                <!-- Кнопка добавления пункта, если карточка в первых двух столбцах -->
-                <button @click="addTask(card)" :disabled="isColumn1Blocked" class="add-task-btn">
-                    Добавить пункт
-                </button>
-            </div>
-        </div>
-
-        <!-- 2-й столбец -->
-        <div class="column">
-            <h2>В процессе</h2>
-            <div v-for="(card, index) in columns[1]" :key="index" class="card">
-                <div class="card-title">
-                    <!-- Заголовок можно редактировать -->
-                    <template v-if="!card.isEditingTitle">
-                        <h3 @dblclick="editCardTitle(card)">{{ card.title }}</h3>
-                    </template>
-                    <template v-else>
-                        <input type="text" v-model="card.title"
-                               @blur="saveCardTitle(card)" @keyup.enter="saveCardTitle(card)" />
-                    </template>
-                </div>
-                <ul class="task-list">
-                    <li v-for="(task, tIndex) in card.tasks" :key="tIndex">
-                        <input type="checkbox" v-model="task.done" @change="updateProgress(card)" />
-                        <template v-if="!task.isEditing">
-                            <span @dblclick="editTask(task)">{{ task.text }}</span>
-                        </template>
-                        <template v-else>
-                            <input type="text" v-model="task.text"
-                                   @blur="saveTask(task)" @keyup.enter="saveTask(task)" />
-                        </template>
-                    </li>
-                </ul>
-            </div>
-        </div>
-
-        <!-- 3-й столбец -->
-        <div class="column">
-            <h2>Готово</h2>
-            <div v-for="(card, index) in columns[2]" :key="index" class="card">
-                <div class="card-title">
-                    <!-- В третьем столбце редактирование отключено -->
-                    <h3>{{ card.title }}</h3>
-                </div>
-                <p class="completed-date">Завершено: {{ card.completedAt }}</p>
-                <ul class="task-list">
-                    <li v-for="(task, tIndex) in card.tasks" :key="tIndex">
-                        {{ task.text }}
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Подключаем Vue и скрипт -->
+<!-- Подключаем Vue и основной скрипт -->
 <script src="js/vue.min.js"></script>
 <script src="js/main.js"></script>
 </body>
