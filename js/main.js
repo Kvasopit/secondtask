@@ -1,5 +1,97 @@
 new Vue({
     el: "#app",
+    template: `
+    <div>
+      <!-- Кнопки управления -->
+      <button @click="addCard" :disabled="isColumn1Blocked" class="add-card-clear-btn">
+        Добавить карточку
+      </button>
+      <button @click="clearStorage" class="add-card-clear-btn">
+        Очистить Ежедневник
+      </button>
+      <p v-if="isColumn1Blocked" class="warning">
+        Первый столбец заблокирован для редактирования
+      </p>
+
+      <div class="columns">
+        <!-- 1-й столбец -->
+        <div class="column">
+          <h2>Новые</h2>
+          <div v-for="(card, index) in columns[0]" :key="index" class="card">
+            <div class="card-title">
+              <template v-if="!card.isEditingTitle">
+                <h3 @dblclick="editCardTitle(card)">{{ card.title }}</h3>
+              </template>
+              <template v-else>
+                <input type="text" v-model="card.title"
+                       @blur="saveCardTitle(card)" @keyup.enter="saveCardTitle(card)" />
+              </template>
+            </div>
+            <ul class="task-list">
+              <li v-for="(task, tIndex) in card.tasks" :key="tIndex">
+                <input type="checkbox" v-model="task.done" @change="updateProgress(card)" />
+                <template v-if="!task.isEditing">
+                  <span @dblclick="editTask(task)">{{ task.text }}</span>
+                </template>
+                <template v-else>
+                  <input type="text" v-model="task.text"
+                         @blur="saveTask(task)" @keyup.enter="saveTask(task)" />
+                </template>
+              </li>
+            </ul>
+            <button @click="addTask(card)" :disabled="isColumn1Blocked" class="add-task-btn">
+              Добавить пункт
+            </button>
+          </div>
+        </div>
+
+        <!-- 2-й столбец -->
+        <div class="column">
+          <h2>В процессе</h2>
+          <div v-for="(card, index) in columns[1]" :key="index" class="card">
+            <div class="card-title">
+              <template v-if="!card.isEditingTitle">
+                <h3 @dblclick="editCardTitle(card)">{{ card.title }}</h3>
+              </template>
+              <template v-else>
+                <input type="text" v-model="card.title"
+                       @blur="saveCardTitle(card)" @keyup.enter="saveCardTitle(card)" />
+              </template>
+            </div>
+            <ul class="task-list">
+              <li v-for="(task, tIndex) in card.tasks" :key="tIndex">
+                <input type="checkbox" v-model="task.done" @change="updateProgress(card)" />
+                <template v-if="!task.isEditing">
+                  <span @dblclick="editTask(task)">{{ task.text }}</span>
+                </template>
+                <template v-else>
+                  <input type="text" v-model="task.text"
+                         @blur="saveTask(task)" @keyup.enter="saveTask(task)" />
+                </template>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 3-й столбец -->
+        <div class="column">
+          <h2>Готово</h2>
+          <div v-for="(card, index) in columns[2]" :key="index" class="card">
+            <div class="card-title">
+              <!-- В третьем столбце редактирование отключено -->
+              <h3>{{ card.title }}</h3>
+            </div>
+            <p class="completed-date">Завершено: {{ card.completedAt }}</p>
+            <ul class="task-list">
+              <li v-for="(task, tIndex) in card.tasks" :key="tIndex">
+                {{ task.text }}
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  `,
     data: {
         columns: [
             [], // 1-й столбец (Новые)
@@ -63,12 +155,9 @@ new Vue({
         },
 
         moveCard(card) {
-            // Определяем, в каком столбце находится карточка
             let columnIndex = this.columns.findIndex(col => col.includes(card));
 
-            // Если карточка в 1-м столбце:
             if (columnIndex === 0) {
-                // Если 100% — переходим сразу в 3-й столбец
                 if (card.completed === 100) {
                     const idx = this.columns[0].indexOf(card);
                     if (idx !== -1) {
@@ -77,9 +166,7 @@ new Vue({
                     card.completedAt = new Date().toLocaleString();
                     this.columns[2].push(card);
                     console.log(`Карточка "${card.title}" завершена и перемещена в "Готово"`);
-                }
-                // Если >50% — переходим во 2-й столбец (если там <5 карточек)
-                else if (card.completed > 50) {
+                } else if (card.completed > 50) {
                     if (this.columns[1].length < 5) {
                         const idx = this.columns[0].indexOf(card);
                         if (idx !== -1) {
@@ -93,7 +180,6 @@ new Vue({
                 }
             }
 
-            // Если карточка во 2-м столбце и выполнена на 100% — переходим в 3-й столбец
             if (columnIndex === 1 && card.completed === 100) {
                 const idx = this.columns[1].indexOf(card);
                 if (idx !== -1) {
@@ -113,16 +199,16 @@ new Vue({
             task.isEditing = false;
         },
 
-        // Редактирование названия карточки
+        // Редактирование заголовка карточки
         editCardTitle(card) {
             this.$set(card, 'isEditingTitle', true);
         },
         saveCardTitle(card) {
             card.isEditingTitle = false;
         },
+
         clearStorage() {
             localStorage.clear();
-            // Если нужно, можно сбросить состояние приложения:
             this.columns = [[], [], []];
             console.log("LocalStorage очищен");
         }
