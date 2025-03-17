@@ -63,12 +63,17 @@ new Vue({
         },
 
         moveCard(card) {
+            // Определяем, в каком столбце находится карточка
             let columnIndex = this.columns.findIndex(col => col.includes(card));
 
+            // Если карточка в 1-м столбце:
             if (columnIndex === 0) {
                 // Если 100% — переходим сразу в 3-й столбец
                 if (card.completed === 100) {
-                    this.columns[0] = this.columns[0].filter(c => c !== card);
+                    const idx = this.columns[0].indexOf(card);
+                    if (idx !== -1) {
+                        this.columns[0].splice(idx, 1);
+                    }
                     card.completedAt = new Date().toLocaleString();
                     this.columns[2].push(card);
                     console.log(`Карточка "${card.title}" завершена и перемещена в "Готово"`);
@@ -76,7 +81,10 @@ new Vue({
                 // Если >50% — переходим во 2-й столбец (если там <5 карточек)
                 else if (card.completed > 50) {
                     if (this.columns[1].length < 5) {
-                        this.columns[0] = this.columns[0].filter(c => c !== card);
+                        const idx = this.columns[0].indexOf(card);
+                        if (idx !== -1) {
+                            this.columns[0].splice(idx, 1);
+                        }
                         this.columns[1].push(card);
                         console.log(`Карточка "${card.title}" перемещена в "В процессе"`);
                     } else {
@@ -85,14 +93,17 @@ new Vue({
                 }
             }
 
-            // Если карточка во 2-м столбце и выполнена на 100% — переходим в 3-й
+            // Если карточка во 2-м столбце и выполнена на 100% — переходим в 3-й столбец
             if (columnIndex === 1 && card.completed === 100) {
-                this.columns[1] = this.columns[1].filter(c => c !== card);
+                const idx = this.columns[1].indexOf(card);
+                if (idx !== -1) {
+                    this.columns[1].splice(idx, 1);
+                }
                 card.completedAt = new Date().toLocaleString();
                 this.columns[2].push(card);
                 console.log(`Карточка "${card.title}" завершена и перемещена в "Готово"`);
             }
-        },
+        }я,
 
         // Редактирование пункта задачи
         editTask(task) {
