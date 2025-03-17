@@ -103,7 +103,7 @@ new Vue({
                 this.columns[2].push(card);
                 console.log(`Карточка "${card.title}" завершена и перемещена в "Готово"`);
             }
-        }я,
+        },
 
         // Редактирование пункта задачи
         editTask(task) {
