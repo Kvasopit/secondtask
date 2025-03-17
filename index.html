@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Заметки</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div id="app">
+    <div class="columns">
+        <div class="column" id="column-1">
+            <h2>Новые</h2>
+            <div v-for="(card, index) in columns[0]" :key="index" class="card">
+                <h3>{{ card.title }}</h3>
+            </div>
+        </div>
+        <div class="column" id="column-2">
+            <h2>В процессе</h2>
+            <div v-for="(card, index) in columns[1]" :key="index" class="card">
+                <h3>{{ card.title }}</h3>
+            </div>
+        </div>
+        <div class="column" id="column-3">
+            <h2>Готово</h2>
+            <div v-for="(card, index) in columns[2]" :key="index" class="card">
+                <h3>{{ card.title }}</h3>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="js/vue.min.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
