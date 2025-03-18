@@ -116,7 +116,11 @@ new Vue({
 
             let newCard = {
                 title: "Новая заметка",
-                tasks: [],
+                tasks: [
+                    { text: "Задача 1", done: false },
+                    { text: "Задача 2", done: false },
+                    { text: "Задача 3", done: false }
+                ],
                 completed: 0,
                 completedAt: null,
                 isEditingTitle: false
